@@ -15,7 +15,9 @@ import type {
 } from "convex/server";
 import type * as auth from "../auth.js";
 import type * as cleanup from "../cleanup.js";
+import type * as crons from "../crons.js";
 import type * as http from "../http.js";
+import type * as models from "../models.js";
 import type * as modes from "../modes.js";
 import type * as mutation from "../mutation.js";
 import type * as query from "../query.js";
@@ -36,7 +38,9 @@ import type * as versions from "../versions.js";
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   cleanup: typeof cleanup;
+  crons: typeof crons;
   http: typeof http;
+  models: typeof models;
   modes: typeof modes;
   mutation: typeof mutation;
   query: typeof query;

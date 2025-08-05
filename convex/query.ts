@@ -27,3 +27,6 @@ export {
   getModeRevisions,
   getOriginalModeForRevision,
 } from "./revisions";
+
+// Models queries
+export { getModelsData } from "./models";

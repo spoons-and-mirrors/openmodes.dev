@@ -1,6 +1,7 @@
 import { FormField } from "./FormField";
 import { FormSection } from "./FormSection";
 import { ToolBadgeInput } from "./ToolBadgeInput";
+import { ModelSelect } from "../ui/model-select";
 
 interface BasicInfoSectionProps {
   formData: {
@@ -77,13 +78,10 @@ export function BasicInfoSection({
           htmlFor="model"
           description="Preferred model (optional)"
         >
-          <input
-            className="w-full h-10 px-3 text-sm border border-muted rounded bg-background-light text-white focus:border-accent focus:outline-none"
-            id="model"
-            type="text"
+          <ModelSelect
             value={formData.model || ""}
-            onChange={(e) => onInputChange("model", e.target.value)}
-            placeholder="e.g., gpt-4o, claude-3.5-sonnet"
+            onValueChange={(value) => onInputChange("model", value)}
+            placeholder="Select a model..."
           />
         </FormField>
       </div>

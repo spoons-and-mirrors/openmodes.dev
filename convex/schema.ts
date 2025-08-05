@@ -107,4 +107,9 @@ export default defineSchema({
   })
     .index("by_user_and_mode", ["userId", "modeId"])
     .index("by_mode", ["modeId"]),
+
+  models: defineTable({
+    data: v.string(), // Raw JSON response from models.dev API
+    lastUpdated: v.number(),
+  }),
 });
