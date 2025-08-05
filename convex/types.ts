@@ -36,6 +36,12 @@ export const InstructionSchema = v.object({
   content: v.string(),
 });
 
+// Resource schema (same structure as instructions)
+export const ResourceSchema = v.object({
+  title: v.string(),
+  content: v.string(),
+});
+
 // MCP tool schema
 export const McpToolSchema = v.object({
   type: v.union(v.literal("local"), v.literal("remote")),
@@ -85,6 +91,9 @@ export const FullModeSchema = v.object({
   tools: v.optional(v.any()),
   prompt: v.optional(v.string()),
   instructions: v.optional(v.array(InstructionSchema)),
+  resources: v.optional(v.array(ResourceSchema)),
+  temperature: v.optional(v.string()),
+  model: v.optional(v.string()),
   votes: v.number(),
   downloads: v.number(),
   status: ModeStatusSchema,
@@ -111,6 +120,9 @@ export const ModeRevisionSchema = v.object({
   description: v.string(),
   prompt: v.optional(v.string()),
   instructions: v.optional(v.array(InstructionSchema)),
+  resources: v.optional(v.array(ResourceSchema)),
+  temperature: v.optional(v.string()),
+  model: v.optional(v.string()),
   tools: v.optional(v.any()),
   change_summary: v.string(),
   status: RevisionStatusSchema,
@@ -142,6 +154,9 @@ export const OriginalModeSchema = v.object({
   description: v.string(),
   prompt: v.optional(v.string()),
   instructions: v.optional(v.array(InstructionSchema)),
+  resources: v.optional(v.array(ResourceSchema)),
+  temperature: v.optional(v.string()),
+  model: v.optional(v.string()),
   tools: v.optional(v.any()),
   version: v.string(),
 });

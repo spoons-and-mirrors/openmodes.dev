@@ -4,6 +4,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id } from "./_generated/dataModel";
 import {
   InstructionSchema,
+  ResourceSchema,
   McpToolSchema,
   ModeRevisionSchema,
   SimpleModeRevisionSchema,
@@ -19,6 +20,9 @@ export const createRevision = mutation({
     description: v.string(),
     prompt: v.string(),
     instructions: v.optional(v.array(InstructionSchema)),
+    resources: v.optional(v.array(ResourceSchema)),
+    temperature: v.optional(v.string()),
+    model: v.optional(v.string()),
     mcp_tools: v.optional(v.array(McpToolSchema)),
     tools: v.optional(v.record(v.string(), v.boolean())),
     change_summary: v.string(),
@@ -70,6 +74,9 @@ export const createRevision = mutation({
       description: args.description,
       prompt: args.prompt,
       instructions: args.instructions || [],
+      resources: args.resources || [],
+      temperature: args.temperature,
+      model: args.model,
       tools: {
         mcp_tools: args.mcp_tools || [],
         tools: args.tools || {},
@@ -165,6 +172,9 @@ export const reviewRevision = mutation({
         description: revision.description,
         prompt: revision.prompt,
         instructions: revision.instructions,
+        resources: revision.resources,
+        temperature: revision.temperature,
+        model: revision.model,
         tools: revision.tools,
         version: revision.proposed_version,
         status: "approved",
@@ -300,6 +310,9 @@ export const getOriginalModeForRevision = query({
       description: originalMode.description,
       prompt: originalMode.prompt,
       instructions: originalMode.instructions,
+      resources: originalMode.resources,
+      temperature: originalMode.temperature,
+      model: originalMode.model,
       tools: originalMode.tools,
       version: originalMode.version,
     };

@@ -8,6 +8,8 @@ interface BasicInfoSectionProps {
     description: string;
     mode_prompt: string;
     author: string;
+    temperature?: string;
+    model?: string;
   };
   tools: Record<string, boolean>;
   onInputChange: (field: string, value: string) => void;
@@ -50,6 +52,38 @@ export function BasicInfoSection({
             onChange={(e) => onInputChange("author", e.target.value)}
             placeholder="Your GitHub handle or nickname"
             required
+          />
+        </FormField>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          label="Temperature"
+          htmlFor="temperature"
+          description="Model temperature (0.0-2.0, optional)"
+        >
+          <input
+            className="w-full h-10 px-3 text-sm border border-muted rounded bg-background-light text-white focus:border-accent focus:outline-none"
+            id="temperature"
+            type="text"
+            value={formData.temperature || ""}
+            onChange={(e) => onInputChange("temperature", e.target.value)}
+            placeholder="e.g., 0.7"
+          />
+        </FormField>
+
+        <FormField
+          label="Model"
+          htmlFor="model"
+          description="Preferred model (optional)"
+        >
+          <input
+            className="w-full h-10 px-3 text-sm border border-muted rounded bg-background-light text-white focus:border-accent focus:outline-none"
+            id="model"
+            type="text"
+            value={formData.model || ""}
+            onChange={(e) => onInputChange("model", e.target.value)}
+            placeholder="e.g., gpt-4o, claude-3.5-sonnet"
           />
         </FormField>
       </div>

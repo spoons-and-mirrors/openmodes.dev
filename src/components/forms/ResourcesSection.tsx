@@ -2,37 +2,35 @@ import { FormSection } from "./FormSection";
 import { FormField } from "./FormField";
 import { Button } from "../ui/button";
 
-interface ContextInstruction {
+interface Resource {
   title: string;
   content: string;
 }
 
-interface ContextInstructionsSectionProps {
-  contextInstructions: ContextInstruction[];
-  onAddInstruction: () => void;
-  onRemoveInstruction: (index: number) => void;
-  onUpdateInstruction: (index: number, field: string, value: string) => void;
+interface ResourcesSectionProps {
+  resources: Resource[];
+  onAddResource: () => void;
+  onRemoveResource: (index: number) => void;
+  onUpdateResource: (index: number, field: string, value: string) => void;
 }
 
-export function ContextInstructionsSection({
-  contextInstructions,
-  onAddInstruction,
-  onRemoveInstruction,
-  onUpdateInstruction,
-}: ContextInstructionsSectionProps) {
+export function ResourcesSection({
+  resources,
+  onAddResource,
+  onRemoveResource,
+  onUpdateResource,
+}: ResourcesSectionProps) {
   return (
     <FormSection
       header={
         <div>
           <div className="flex items-center justify-between">
-            <h3 className="text-text-primary font-semibold">
-              Context Instructions
-            </h3>
+            <h3 className="text-text-primary font-semibold">Resources</h3>
             <Button
               type="button"
               variant="secondary"
               size="sm"
-              onClick={onAddInstruction}
+              onClick={onAddResource}
               className="text-text-primary"
             >
               <svg
@@ -47,17 +45,18 @@ export function ContextInstructionsSection({
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Add Instruction
+              Add Resource
             </Button>
           </div>
           <p className="text-xs text-text-secondary">
-            Define specific instructions that provide context for this mode
+            Define prompts that the LLM can use as tool calls. These resources
+            are not included in the main request, unlike instructions.
           </p>
         </div>
       }
     >
       <div className="space-y-4">
-        {contextInstructions.map((instruction, index) => (
+        {resources.map((resource, index) => (
           <div
             key={index}
             className="border border-muted rounded p-4 bg-background-light space-y-3 relative"
@@ -65,7 +64,7 @@ export function ContextInstructionsSection({
             <button
               type="button"
               className="absolute top-2 right-2 flex items-center justify-center w-6 h-6 border border-muted rounded bg-transparent text-text-primary cursor-pointer transition-colors hover:border-accent hover:text-accent"
-              onClick={() => onRemoveInstruction(index)}
+              onClick={() => onRemoveResource(index)}
             >
               <svg
                 width="14"
@@ -84,10 +83,10 @@ export function ContextInstructionsSection({
               <input
                 className="w-full h-8 px-2.5 text-sm border border-muted rounded bg-background text-white focus:border-accent focus:outline-none"
                 type="text"
-                placeholder="Instruction title"
-                value={instruction.title}
+                placeholder="Resource title"
+                value={resource.title}
                 onChange={(e) =>
-                  onUpdateInstruction(index, "title", e.target.value)
+                  onUpdateResource(index, "title", e.target.value)
                 }
               />
             </FormField>
@@ -95,10 +94,10 @@ export function ContextInstructionsSection({
             <FormField label="Content">
               <textarea
                 className="w-full px-2.5 py-2 text-sm border border-muted rounded bg-background text-white focus:border-accent focus:outline-none resize-y min-h-[80px]"
-                placeholder="Instruction content"
-                value={instruction.content}
+                placeholder="Resource content"
+                value={resource.content}
                 onChange={(e) =>
-                  onUpdateInstruction(index, "content", e.target.value)
+                  onUpdateResource(index, "content", e.target.value)
                 }
                 rows={3}
               />

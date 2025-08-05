@@ -8,6 +8,7 @@ import { FormSection } from "../forms/FormSection";
 import { FormField } from "../forms/FormField";
 import { BasicInfoSection } from "../forms/BasicInfoSection";
 import { ContextInstructionsSection } from "../forms/ContextInstructionsSection";
+import { ResourcesSection } from "../forms/ResourcesSection";
 import { McpToolsSection } from "../forms/McpToolsSection";
 import { useModalStore } from "../../lib/stores/modalStore";
 import { useModeFormStore } from "../../lib/stores/modeFormStore";
@@ -31,6 +32,7 @@ export function EditModeModal({}: EditModeModalProps) {
   const {
     formData,
     contextInstructions,
+    resources,
     mcpTools,
     tools,
     changeSummary,
@@ -39,6 +41,9 @@ export function EditModeModal({}: EditModeModalProps) {
     addContextInstruction,
     removeContextInstruction,
     updateContextInstruction,
+    addResource,
+    removeResource,
+    updateResource,
     addMcpTool,
     removeMcpTool,
     updateMcpTool,
@@ -73,6 +78,11 @@ export function EditModeModal({}: EditModeModalProps) {
         instructions: contextInstructions.filter(
           (inst: any) => inst.title && inst.content,
         ),
+        resources: resources.filter(
+          (resource: any) => resource.title && resource.content,
+        ),
+        temperature: formData.temperature || undefined,
+        model: formData.model || undefined,
         mcp_tools: mcpTools.filter((tool: any) => tool.name),
         tools: tools,
         change_summary: changeSummary,
@@ -150,6 +160,13 @@ export function EditModeModal({}: EditModeModalProps) {
           onAddInstruction={addContextInstruction}
           onRemoveInstruction={removeContextInstruction}
           onUpdateInstruction={updateContextInstruction}
+        />
+
+        <ResourcesSection
+          resources={resources}
+          onAddResource={addResource}
+          onRemoveResource={removeResource}
+          onUpdateResource={updateResource}
         />
 
         <McpToolsSection

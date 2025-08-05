@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ContextInstruction, McpTool, ModeFormData } from "../types";
+import { ContextInstruction, McpTool, ModeFormData, Resource } from "../types";
 
 export type FormMode = "create" | "edit";
 
@@ -11,6 +11,7 @@ export interface ModeFormState {
   // Core form data
   formData: ModeFormData;
   contextInstructions: ContextInstruction[];
+  resources: Resource[];
   mcpTools: McpTool[];
   tools: Record<string, boolean>;
 
@@ -33,6 +34,12 @@ export interface ModeFormState {
   ) => void;
   updateContextInstructions: (instructions: ContextInstruction[]) => void;
 
+  // Actions for resources
+  addResource: () => void;
+  removeResource: (index: number) => void;
+  updateResource: (index: number, field: string, value: string) => void;
+  updateResources: (resources: Resource[]) => void;
+
   // Actions for MCP tools
   addMcpTool: () => void;
   removeMcpTool: (index: number) => void;
@@ -51,6 +58,9 @@ export interface ModeFormState {
     description: string;
     prompt?: string;
     instructions?: ContextInstruction[];
+    resources?: Resource[];
+    temperature?: string;
+    model?: string;
     tools?: {
       mcp_tools?: McpTool[];
       tools?: Record<string, boolean>;
@@ -65,11 +75,15 @@ const initialFormData: ModeFormData = {
   description: "",
   mode_prompt: "",
   author: "",
+  temperature: "",
+  model: "",
 };
 
 const initialContextInstructions: ContextInstruction[] = [
   { title: "", content: "" },
 ];
+
+const initialResources: Resource[] = [{ title: "", content: "" }];
 
 const initialMcpTools: McpTool[] = [
   { type: "local", name: "", command: "", url: "" },
@@ -79,6 +93,7 @@ const initialState = {
   mode: "create" as FormMode,
   formData: initialFormData,
   contextInstructions: initialContextInstructions,
+  resources: initialResources,
   mcpTools: initialMcpTools,
   tools: {},
   changeSummary: "",
@@ -141,6 +156,26 @@ export const useModeFormStore = create<ModeFormState>()(
       updateContextInstructions: (instructions: ContextInstruction[]) =>
         set({ contextInstructions: instructions }),
 
+      // Resources actions
+      addResource: () =>
+        set((state) => ({
+          resources: [...state.resources, { title: "", content: "" }],
+        })),
+
+      removeResource: (index: number) =>
+        set((state) => ({
+          resources: state.resources.filter((_, i) => i !== index),
+        })),
+
+      updateResource: (index: number, field: string, value: string) =>
+        set((state) => ({
+          resources: state.resources.map((item, i) =>
+            i === index ? { ...item, [field]: value } : item,
+          ),
+        })),
+
+      updateResources: (resources: Resource[]) => set({ resources }),
+
       // MCP tools actions
       addMcpTool: () =>
         set((state) => ({
@@ -173,6 +208,7 @@ export const useModeFormStore = create<ModeFormState>()(
           mode: "create",
           formData: initialFormData,
           contextInstructions: initialContextInstructions,
+          resources: initialResources,
           mcpTools: initialMcpTools,
           tools: {},
           changeSummary: "",
@@ -193,10 +229,13 @@ export const useModeFormStore = create<ModeFormState>()(
             description: modeData.description,
             mode_prompt: modeData.prompt || "",
             author: modeData.author,
+            temperature: modeData.temperature || "",
+            model: modeData.model || "",
           },
           contextInstructions: modeData.instructions || [
             { title: "", content: "" },
           ],
+          resources: modeData.resources || [{ title: "", content: "" }],
           mcpTools:
             initialMcpTools.length > 0 ? initialMcpTools : initialMcpTools,
           tools: initialDisabledTools,
@@ -217,6 +256,7 @@ export const useModeFormStore = create<ModeFormState>()(
             mode: state.mode,
             formData: state.formData,
             contextInstructions: state.contextInstructions,
+            resources: state.resources,
             mcpTools: state.mcpTools,
             tools: state.tools,
           };
@@ -233,6 +273,10 @@ export const useModeFormStore = create<ModeFormState>()(
             state.contextInstructions.length === 0
           ) {
             state.contextInstructions = [{ title: "", content: "" }];
+          }
+          // Ensure resources has at least one empty resource
+          if (!state.resources || state.resources.length === 0) {
+            state.resources = [{ title: "", content: "" }];
           }
           // Ensure mcpTools has at least one empty tool
           if (!state.mcpTools || state.mcpTools.length === 0) {

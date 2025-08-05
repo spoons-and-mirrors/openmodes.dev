@@ -6,6 +6,7 @@ import { FormActions } from "../forms/FormActions";
 import { Button } from "../ui/button";
 import { BasicInfoSection } from "../forms/BasicInfoSection";
 import { ContextInstructionsSection } from "../forms/ContextInstructionsSection";
+import { ResourcesSection } from "../forms/ResourcesSection";
 import { McpToolsSection } from "../forms/McpToolsSection";
 import { useModeFormStore } from "../../lib/stores/modeFormStore";
 import { useModalStore } from "../../lib/stores/modalStore";
@@ -21,6 +22,7 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
   const {
     formData,
     contextInstructions,
+    resources,
     mcpTools,
     tools,
     updateFormData,
@@ -28,6 +30,9 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
     addContextInstruction,
     removeContextInstruction,
     updateContextInstruction,
+    addResource,
+    removeResource,
+    updateResource,
     addMcpTool,
     removeMcpTool,
     updateMcpTool,
@@ -58,6 +63,11 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
         instructions: contextInstructions.filter(
           (inst) => inst.title && inst.content,
         ),
+        resources: resources.filter(
+          (resource) => resource.title && resource.content,
+        ),
+        temperature: formData.temperature || undefined,
+        model: formData.model || undefined,
         mcp_tools: mcpTools.filter((tool) => tool.name),
         tools: tools,
       });
@@ -115,6 +125,13 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
           onAddInstruction={addContextInstruction}
           onRemoveInstruction={removeContextInstruction}
           onUpdateInstruction={updateContextInstruction}
+        />
+
+        <ResourcesSection
+          resources={resources}
+          onAddResource={addResource}
+          onRemoveResource={removeResource}
+          onUpdateResource={updateResource}
         />
 
         <McpToolsSection

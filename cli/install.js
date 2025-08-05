@@ -58,19 +58,44 @@ async function installMode(modeId, devFlag = false, globalFlag = false) {
             require("os").homedir(),
             ".config",
             "opencode",
-            "instructions",
+            "prompts",
             modeId,
           )
-        : path.join(process.cwd(), ".opencode", "instructions", modeId);
+        : path.join(process.cwd(), ".opencode", "prompts", modeId);
       ensureDirectoryExists(baseDir);
       for (const instruction of modeData.instructions) {
-        const filename = `${instruction.title.toLowerCase()}.instructions.md`;
+        const filename = `${instruction.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}.instruction.md`;
         const instructionPath = path.join(baseDir, filename);
         fs.writeFileSync(instructionPath, instruction.content);
         instructionsArr.push({
           file: globalFlag
-            ? `~/.config/opencode/instructions/${modeId}/${filename}`
-            : `./.opencode/instructions/${modeId}/${filename}`,
+            ? `~/.config/opencode/prompts/${modeId}/${filename}`
+            : `./.opencode/prompts/${modeId}/${filename}`,
+        });
+      }
+    }
+
+    // Write resource files
+    let resourcesArr = [];
+    if (Array.isArray(modeData.resources)) {
+      const baseDir = globalFlag
+        ? path.join(
+            require("os").homedir(),
+            ".config",
+            "opencode",
+            "prompts",
+            modeId,
+          )
+        : path.join(process.cwd(), ".opencode", "prompts", modeId);
+      ensureDirectoryExists(baseDir);
+      for (const resource of modeData.resources) {
+        const filename = `${resource.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}.resource.md`;
+        const resourcePath = path.join(baseDir, filename);
+        fs.writeFileSync(resourcePath, resource.content);
+        resourcesArr.push({
+          file: globalFlag
+            ? `~/.config/opencode/prompts/${modeId}/${filename}`
+            : `./.opencode/prompts/${modeId}/${filename}`,
         });
       }
     }
@@ -100,6 +125,10 @@ async function installMode(modeId, devFlag = false, globalFlag = false) {
       instructionsArr.length > 0
         ? "instructions:\n" +
           instructionsArr.map((i) => `  - file: ${i.file}`).join("\n")
+        : "",
+      resourcesArr.length > 0
+        ? "resources:\n" +
+          resourcesArr.map((r) => `  - file: ${r.file}`).join("\n")
         : "",
       "---",
     ]
@@ -136,7 +165,18 @@ function removeMode(modeId, globalFlag = false) {
         )
       : path.join(process.cwd(), ".opencode", "mode", `${modeId}.md`);
 
-    const instructionsDir = globalFlag
+    const promptsDir = globalFlag
+      ? path.join(
+          require("os").homedir(),
+          ".config",
+          "opencode",
+          "prompts",
+          modeId,
+        )
+      : path.join(process.cwd(), ".opencode", "prompts", modeId);
+
+    // Also clean up old instructions directory if it exists
+    const oldInstructionsDir = globalFlag
       ? path.join(
           require("os").homedir(),
           ".config",
@@ -149,8 +189,11 @@ function removeMode(modeId, globalFlag = false) {
     if (fs.existsSync(modeFilePath)) {
       fs.rmSync(modeFilePath, { force: true });
     }
-    if (fs.existsSync(instructionsDir)) {
-      fs.rmSync(instructionsDir, { recursive: true, force: true });
+    if (fs.existsSync(promptsDir)) {
+      fs.rmSync(promptsDir, { recursive: true, force: true });
+    }
+    if (fs.existsSync(oldInstructionsDir)) {
+      fs.rmSync(oldInstructionsDir, { recursive: true, force: true });
     }
 
     console.log(`✅ Successfully removed mode "${modeId}"`);

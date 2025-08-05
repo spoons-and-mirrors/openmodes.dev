@@ -154,6 +154,13 @@ export function ModeModal({}: ModeModalProps) {
     }
   };
 
+  const handleScrollToResource = (index: number) => {
+    const element = document.getElementById(`resource-${index}`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const handleStatusUpdate = async (
     modeId: Id<"modes">,
     newStatus: "pending" | "approved" | "rejected",
@@ -474,6 +481,36 @@ export function ModeModal({}: ModeModalProps) {
               <MarkdownRenderer content={displayMode.description} />
             </div>
 
+            {(displayMode.model || displayMode.temperature) && (
+              <div>
+                <h4 className="m-0 mb-3 text-sm font-semibold text-text-primary">
+                  MODEL CONFIGURATION
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {displayMode.model && (
+                    <div className="flex items-center gap-2 py-2 px-3 rounded bg-[#111] text-text-primary">
+                      <span className="text-xs text-text-secondary">
+                        Model:
+                      </span>
+                      <span className="font-mono text-sm">
+                        {displayMode.model}
+                      </span>
+                    </div>
+                  )}
+                  {displayMode.temperature && (
+                    <div className="flex items-center gap-2 py-2 px-3 rounded bg-[#111] text-text-primary">
+                      <span className="text-xs text-text-secondary">
+                        Temperature:
+                      </span>
+                      <span className="font-mono text-sm">
+                        {displayMode.temperature}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {mcpTools.length > 0 && (
               <div>
                 <h4 className="m-0 mb-3 text-sm font-semibold text-text-primary">
@@ -528,6 +565,7 @@ export function ModeModal({}: ModeModalProps) {
 
             {((displayMode.instructions &&
               displayMode.instructions.length > 0) ||
+              (displayMode.resources && displayMode.resources.length > 0) ||
               displayMode.prompt) && (
               <div>
                 <h4 className="m-0 mb-3 text-sm font-semibold text-text-primary">
@@ -546,11 +584,23 @@ export function ModeModal({}: ModeModalProps) {
                     displayMode.instructions.map(
                       (instruction: any, index: number) => (
                         <button
-                          key={index}
+                          key={`instruction-${index}`}
                           onClick={() => handleScrollToInstruction(index)}
                           className="inline-block py-2 px-3 font-mono text-[13px] no-underline rounded-r bg-[#111] text-text-primary transition-all duration-200 cursor-pointer hover:bg-brand-complementary/20 hover:text-text-primary hover:-translate-y-px border-l-3 border-brand-complementary"
                         >
                           {instruction.title}
+                        </button>
+                      ),
+                    )}
+                  {displayMode.resources &&
+                    displayMode.resources.map(
+                      (resource: any, index: number) => (
+                        <button
+                          key={`resource-${index}`}
+                          onClick={() => handleScrollToResource(index)}
+                          className="inline-block py-2 px-3 font-mono text-[13px] no-underline rounded-r bg-[#111] text-text-primary transition-all duration-200 cursor-pointer hover:bg-purple-500/20 hover:text-text-primary hover:-translate-y-px border-l-3 border-purple-500"
+                        >
+                          {resource.title}
                         </button>
                       ),
                     )}
@@ -617,6 +667,38 @@ export function ModeModal({}: ModeModalProps) {
                   </div>
                 </div>
               )}
+
+            {displayMode.resources && displayMode.resources.length > 0 && (
+              <div>
+                <h4 className="m-0 mb-3 text-sm font-semibold text-text-primary">
+                  RESOURCES
+                </h4>
+
+                <div className="flex flex-col gap-4">
+                  {displayMode.resources.map((resource: any, index: number) => (
+                    <div
+                      key={index}
+                      id={`resource-${index}`}
+                      className="relative p-2 rounded-r-md border-l-3 border-purple-500 bg-background-light overflow-hidden"
+                    >
+                      <button
+                        className={`absolute top-0 right-0 m-0 py-1 px-2 text-[10px] font-semibold leading-none uppercase tracking-wide border border-muted rounded-r-md bg-background text-text-primary cursor-pointer transition-all duration-200 z-[2] hover:bg-purple-500 hover:text-muted focus:bg-purple-500 focus:text-muted focus:outline-none ${copyStatus[`resource-${index}`] ? "bg-purple-500 text-muted" : ""}`}
+                        onClick={() =>
+                          copyToClipboard(resource.content, `resource-${index}`)
+                        }
+                      >
+                        {copyStatus[`resource-${index}`]
+                          ? "Copied!"
+                          : resource.title}
+                      </button>
+                      <div className="m-0 py-1.5 pr-8 pl-2.5 overflow-x-auto">
+                        <MarkdownRenderer content={resource.content} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

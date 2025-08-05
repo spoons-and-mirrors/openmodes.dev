@@ -31,6 +31,16 @@ export default defineSchema({
         }),
       ),
     ),
+    resources: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          content: v.string(),
+        }),
+      ),
+    ),
+    temperature: v.optional(v.string()),
+    model: v.optional(v.string()),
     votes: v.number(),
     downloads: v.number(),
     status: v.union(
@@ -64,6 +74,16 @@ export default defineSchema({
         }),
       ),
     ),
+    resources: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          content: v.string(),
+        }),
+      ),
+    ),
+    temperature: v.optional(v.string()),
+    model: v.optional(v.string()),
     tools: v.optional(v.any()),
     change_summary: v.string(), // What changed (PR message)
     status: v.union(

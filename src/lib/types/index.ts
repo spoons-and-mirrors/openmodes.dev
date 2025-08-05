@@ -11,6 +11,11 @@ export interface ContextInstruction {
   content: string;
 }
 
+export interface Resource {
+  title: string;
+  content: string;
+}
+
 export interface McpTool {
   type: "local" | "remote";
   name: string;
@@ -23,6 +28,8 @@ export interface ModeFormData {
   description: string;
   mode_prompt: string;
   author: string;
+  temperature?: string;
+  model?: string;
 }
 
 export interface ModeBase {
