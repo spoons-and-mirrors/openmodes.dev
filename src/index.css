@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #fd9527;
+  --color-background: #1e1e1e;
+  --color-background-light: #2a2a2a;
+  --color-muted: #333333;
+  --color-muted-hover: #444444;
+  --color-text-primary: #aaaaaa;
+  --color-text-secondary: #666666;
+  --color-brand-hover: #e8851f;
+
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-sans: "Rubik", sans-serif;
+  --color-brand: #fd9527;
+  --color-brand-complementary: #6dc3bb;
+  --color-heading: #e5e5e5;
+  --color-emphasis: #e5e5e5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Rubik", sans-serif;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Simple scroll prevention when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Custom scrollbar for modal content */
+.modal-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Webkit */
+}
+
+/* TEMP DISABLE
+.modal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--text-secondary));
+}
+*/
+/* Markdown content styling within modal */
+.markdown-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.markdown-content * {
+  max-width: 100%;
+}
+
+.markdown-content pre {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.markdown-content code {
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.markdown-content table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+}
+
+/* XML element styling */
+.markdown-content [data-xml-element] {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* Syntax highlighting improvements */
+.markdown-content .token.comment,
+.markdown-content .token.prolog,
+.markdown-content .token.doctype,
+.markdown-content .token.cdata {
+  color: #6a737d;
+}
+
+.markdown-content .token.namespace {
+  opacity: 0.7;
+}
+
+.markdown-content .token.string,
+.markdown-content .token.attr-value {
+  color: #98c379;
+}
+
+.markdown-content .token.punctuation,
+.markdown-content .token.operator {
+  color: #abb2bf;
+}
+
+.markdown-content .token.entity,
+.markdown-content .token.url,
+.markdown-content .token.symbol,
+.markdown-content .token.number,
+.markdown-content .token.boolean,
+.markdown-content .token.variable,
+.markdown-content .token.constant,
+.markdown-content .token.property,
+.markdown-content .token.regex,
+.markdown-content .token.inserted {
+  color: #d19a66;
+}
+
+.markdown-content .token.atrule,
+.markdown-content .token.keyword,
+.markdown-content .token.attr-name,
+.markdown-content .language-autohotkey .token.selector {
+  color: #c678dd;
+}
+
+.markdown-content .token.function,
+.markdown-content .token.deleted,
+.markdown-content .language-autohotkey .token.tag {
+  color: #e06c75;
+}
+
+.markdown-content .token.tag,
+.markdown-content .token.selector,
+.markdown-content .language-autohotkey .token.keyword {
+  color: #e06c75;
+}
+
+.markdown-content .token.important,
+.markdown-content .token.function,
+.markdown-content .token.bold {
+  font-weight: bold;
+}
+
+.markdown-content .token.italic {
+  font-style: italic;
+}

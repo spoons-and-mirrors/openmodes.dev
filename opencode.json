@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [".opencode/instructions/convex_rules.md"],
+  "mcp": {
+    "context7": {
+      "type": "local",
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
+      "enabled": true
+    },
+    "think-tool": {
+      "type": "local",
+      "command": ["npx", "-y", "think-tool-mcp"],
+      "enabled": true
+    },
+    "repomix": {
+      "type": "local",
+      "command": ["npx", "-y", "repomix", "--mcp"],
+      "enabled": true
+    }
+  },
+  "provider": {},
+  "mode": {}
+}

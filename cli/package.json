@@ -1,0 +1,33 @@
+{
+  "name": "openmodes",
+  "version": "0.1.6",
+  "description": "CLI tool for installing opencode Agents configs from openmodes.dev",
+  "type": "module",
+  "main": "install.js",
+  "bin": {
+    "openmodes": "./install.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "openmodes",
+    "cli",
+    "opencode",
+    "ai",
+    "agents",
+    "llm",
+    "automation"
+  ],
+  "author": "spoon",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spoons-and-mirrors/openmodes.dev.git",
+    "directory": "cli"
+  },
+  "homepage": "https://openmodes.dev",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
