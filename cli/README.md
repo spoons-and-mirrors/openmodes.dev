@@ -37,8 +37,8 @@ npx openmodes remove <agent-name> [-g|--global]
 
 ## File Structure
 
-**Local:** `.opencode/agent/{agent-name}.md` and `.opencode/prompts/{agent-name}/`
-**Global:** `~/.config/opencode/agent/{agent-name}.md` and `~/.config/opencode/prompts/{agent-name}/`
+**Local:** `.opencode/mode/{agent-name}.md` and `.opencode/prompts/{agent-name}/`
+**Global:** `~/.config/opencode/mode/{agent-name}.md` and `~/.config/opencode/prompts/{agent-name}/`
 
 Agent names with special characters (like `@`) are sanitized for filesystem use (e.g., `agent@1.3` becomes `agent-1-3`).
 

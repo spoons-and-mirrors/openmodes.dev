@@ -9,6 +9,8 @@ interface ModalState {
   showEditModeModal: boolean;
   showReviewModal: boolean;
   showAdminPanel: boolean;
+  showAdminReviewNotificationModal: boolean;
+  submittedModeName: string;
 
   // Actions
   openModeModal: (modeId: Id<"modes">) => void;
@@ -23,6 +25,8 @@ interface ModalState {
   closeReviewModal: () => void;
   openAdminPanel: () => void;
   closeAdminPanel: () => void;
+  openAdminReviewNotificationModal: (modeName: string) => void;
+  closeAdminReviewNotificationModal: () => void;
   closeAllModals: () => void;
 }
 
@@ -33,6 +37,8 @@ const initialState = {
   showEditModeModal: false,
   showReviewModal: false,
   showAdminPanel: false,
+  showAdminReviewNotificationModal: false,
+  submittedModeName: "",
 };
 
 export const useModalStore = create<ModalState>((set) => ({
@@ -121,4 +127,19 @@ export const useModalStore = create<ModalState>((set) => ({
 
   // Close all modals (useful for escape key handling)
   closeAllModals: () => set(initialState),
+
+  // Admin review notification modal actions
+  openAdminReviewNotificationModal: (modeName: string) =>
+    set((state) => ({
+      ...state,
+      showAdminReviewNotificationModal: true,
+      submittedModeName: modeName,
+    })),
+
+  closeAdminReviewNotificationModal: () =>
+    set((state) => ({
+      ...state,
+      showAdminReviewNotificationModal: false,
+      submittedModeName: "",
+    })),
 }));

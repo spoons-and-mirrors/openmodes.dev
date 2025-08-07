@@ -1,6 +1,6 @@
 {
   "name": "openmodes",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "CLI tool for installing opencode Agents configs from openmodes.dev",
   "type": "module",
   "main": "install.js",

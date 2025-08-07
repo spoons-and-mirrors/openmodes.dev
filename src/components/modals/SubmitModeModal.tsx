@@ -11,11 +11,19 @@ import { McpToolsSection } from "../forms/McpToolsSection";
 import { useModeFormStore } from "../../lib/stores/modeFormStore";
 import { useModalStore } from "../../lib/stores/modalStore";
 import { useAutoSave } from "../../hooks";
+import { AdminReviewNotificationModal } from "./AdminReviewNotificationModal";
 
 interface SubmitModeModalProps {}
 
 export function SubmitModeModal({}: SubmitModeModalProps) {
-  const { showSubmitModeModal, closeSubmitModeModal } = useModalStore();
+  const {
+    showSubmitModeModal,
+    closeSubmitModeModal,
+    showAdminReviewNotificationModal,
+    submittedModeName,
+    openAdminReviewNotificationModal,
+    closeAdminReviewNotificationModal,
+  } = useModalStore();
   const createMode = useMutation(api.mutation.createMode);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -103,6 +111,11 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
       return;
     }
 
+    // Show confirmation dialog instead of submitting directly
+    openAdminReviewNotificationModal(formData.name);
+  };
+
+  const handleConfirmSubmit = async () => {
     setIsSubmitting(true);
 
     try {
@@ -127,6 +140,7 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
       // Clear form data from store and localStorage on successful submission
       clearForm();
       clearSavedData();
+      closeAdminReviewNotificationModal();
       closeSubmitModeModal();
     } catch (error) {
       console.error("Failed to create mode:", error);
@@ -134,7 +148,6 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
       setIsSubmitting(false);
     }
   };
-
   const actions = (
     <form
       onSubmit={(e) => {
@@ -197,45 +210,54 @@ export function SubmitModeModal({}: SubmitModeModalProps) {
   const { title, subtitle } = getModalHeader();
 
   return (
-    <BaseModal
-      isOpen={showSubmitModeModal}
-      onClose={handleClose}
-      title={title}
-      subtitle={subtitle}
-      maxWidth="4xl"
-      actions={actions}
-    >
-      {" "}
-      <div className="pl-6 pr-4 pt-2 pb-6 space-y-8">
-        <BasicInfoSection
-          formData={formData}
-          tools={tools}
-          onInputChange={updateFormData}
-          onToolsChange={updateTools}
-          disabledFields={[]}
-        />
+    <>
+      <BaseModal
+        isOpen={showSubmitModeModal}
+        onClose={handleClose}
+        title={title}
+        subtitle={subtitle}
+        maxWidth="4xl"
+        actions={actions}
+      >
+        {" "}
+        <div className="pl-6 pr-4 pt-2 pb-6 space-y-8">
+          <BasicInfoSection
+            formData={formData}
+            tools={tools}
+            onInputChange={updateFormData}
+            onToolsChange={updateTools}
+            disabledFields={[]}
+          />
 
-        <ContextInstructionsSection
-          contextInstructions={contextInstructions}
-          onAddInstruction={addContextInstruction}
-          onRemoveInstruction={removeContextInstruction}
-          onUpdateInstruction={updateContextInstruction}
-        />
+          <ContextInstructionsSection
+            contextInstructions={contextInstructions}
+            onAddInstruction={addContextInstruction}
+            onRemoveInstruction={removeContextInstruction}
+            onUpdateInstruction={updateContextInstruction}
+          />
 
-        <ResourcesSection
-          resources={resources}
-          onAddResource={addResource}
-          onRemoveResource={removeResource}
-          onUpdateResource={updateResource}
-        />
+          <ResourcesSection
+            resources={resources}
+            onAddResource={addResource}
+            onRemoveResource={removeResource}
+            onUpdateResource={updateResource}
+          />
 
-        <McpToolsSection
-          mcpTools={mcpTools}
-          onAddTool={addMcpTool}
-          onRemoveTool={removeMcpTool}
-          onUpdateTool={updateMcpTool}
-        />
-      </div>
-    </BaseModal>
+          <McpToolsSection
+            mcpTools={mcpTools}
+            onAddTool={addMcpTool}
+            onRemoveTool={removeMcpTool}
+            onUpdateTool={updateMcpTool}
+          />
+        </div>
+      </BaseModal>
+
+      <AdminReviewNotificationModal
+        isOpen={showAdminReviewNotificationModal}
+        onClose={closeAdminReviewNotificationModal}
+        onConfirm={handleConfirmSubmit}
+        modeName={submittedModeName}
+      />
+    </>
   );
 }
