@@ -95,7 +95,7 @@ export function McpToolsSection({
                 <DebouncedInput
                   className="w-full h-10 px-3 text-sm border border-muted rounded bg-background text-white focus:outline-none"
                   type="text"
-                  placeholder="Tool name"
+                  placeholder="Server name"
                   value={tool.name}
                   onChange={(value: string) =>
                     onUpdateTool(index, "name", value)
@@ -136,7 +136,7 @@ export function McpToolsSection({
                 <DebouncedInput
                   className="w-full h-10 px-3 text-sm border border-muted rounded bg-background text-white focus:outline-none"
                   type="text"
-                  placeholder="Command to run"
+                  placeholder="Command to run, ex:  `npx -y @upstash/context7-mcp`"
                   value={tool.command || ""}
                   onChange={(value: string) =>
                     onUpdateTool(index, "command", value)

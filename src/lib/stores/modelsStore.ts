@@ -115,14 +115,12 @@ export function parseModelsData(modelsData: any): ParsedModel[] {
       },
     );
 
-    // Sort by provider name, then by model name, and limit to first 100 for performance
-    return allModels
-      .sort(
-        (a, b) =>
-          a.provider.localeCompare(b.provider) ||
-          a.modelName.localeCompare(b.modelName),
-      )
-      .slice(0, 100);
+    // Sort by provider name, then by model name
+    return allModels.sort(
+      (a, b) =>
+        a.provider.localeCompare(b.provider) ||
+        a.modelName.localeCompare(b.modelName),
+    );
   } catch (error) {
     console.error("Error parsing models data:", error);
     return [];
