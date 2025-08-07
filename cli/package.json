@@ -1,11 +1,11 @@
 {
   "name": "openmodes",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "CLI tool for installing opencode Agents configs from openmodes.dev",
   "type": "module",
-  "main": "install.js",
+  "main": "index.js",
   "bin": {
-    "openmodes": "./install.js"
+    "openmodes": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

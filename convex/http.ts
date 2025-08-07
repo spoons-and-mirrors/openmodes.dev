@@ -15,16 +15,33 @@ http.route({
     try {
       const modes = await ctx.runQuery(api.query.listModes, {});
 
-      // Return only basic metadata for index
-      const indexData = modes.map((mode) => ({
-        _id: mode._id,
-        name: mode.name,
-        author: mode.author,
-        description: mode.description,
-        votes: mode.votes,
-        downloads: mode.downloads,
-        updated_at: mode.updated_at,
-      }));
+      // Return basic metadata for index with version information
+      const indexData = await Promise.all(
+        modes.map(async (mode) => {
+          // Get all versions for this specific mode by name
+          const allVersionsForMode = await ctx.runQuery(
+            api.query.debugModeVersions,
+            { name: mode.name },
+          );
+
+          // Filter only approved versions and extract version numbers
+          const approvedVersions = allVersionsForMode
+            .filter((v) => v.status === "approved")
+            .map((v) => v.version)
+            .sort();
+
+          return {
+            _id: mode._id,
+            name: mode.name,
+            author: mode.author,
+            description: mode.description,
+            votes: mode.votes,
+            downloads: mode.downloads,
+            updated_at: mode.updated_at,
+            versions: approvedVersions,
+          };
+        }),
+      );
 
       return new Response(JSON.stringify(indexData, null, 2), {
         status: 200,

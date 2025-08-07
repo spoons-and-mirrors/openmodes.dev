@@ -1,29 +1,22 @@
-#!/usr/bin/env node
-
 import fs from "fs";
 import path from "path";
-import http from "http";
-import https from "https";
 import os from "os";
 import { createInterface } from "readline";
+import { fetchJson } from "../utils/api.js";
+import { URLS } from "../utils/config.js";
 
 // Configuration - easily change paths here
 const PATHS = {
   local: {
     base: ".opencode",
-    agent: "mode",
+    agent: "agent",
     prompts: "prompts",
   },
   global: {
     base: path.join(os.homedir(), ".config", "opencode"),
-    agent: "mode",
+    agent: "agent",
     prompts: "prompts",
   },
-};
-
-const URLS = {
-  production: "https://openmodes.dev/api",
-  development: "http://localhost:5173/api",
 };
 
 async function promptUser(question) {
@@ -80,27 +73,6 @@ function ensureDirectoryExists(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
-}
-
-async function fetchJson(url) {
-  return new Promise((resolve, reject) => {
-    const client = url.startsWith("https://") ? https : http;
-    client
-      .get(url, (res) => {
-        let data = "";
-        res.on("data", (chunk) => {
-          data += chunk;
-        });
-        res.on("end", () => {
-          try {
-            resolve(JSON.parse(data));
-          } catch (e) {
-            reject(e);
-          }
-        });
-      })
-      .on("error", reject);
-  });
 }
 
 async function installAgent(
@@ -189,6 +161,10 @@ async function installAgent(
     // Compose YAML frontmatter
     const yamlParts = ["---"];
 
+    if (agentData.description) {
+      yamlParts.push(`description: ${agentData.description}`);
+    }
+
     if (agentData.model) {
       yamlParts.push(`model: ${agentData.model}`);
     }
@@ -241,98 +217,22 @@ async function installAgent(
     fs.writeFileSync(agentFilePath, `${yamlHeader}\n\n${prompt}`);
 
     console.log(`✅ Successfully installed agent "${agentName}"`);
+    console.log(
+      `⚠️  Note: This agent may not be fully compatible with opencode yet. Check https://github.com/sst/opencode/pull/1688 for compatibility updates.`,
+    );
   } catch (error) {
     console.error(`❌ Error installing agent "${agentName}":`, error.message);
     process.exit(1);
   }
 }
 
-function removeAgent(agentName, globalFlag = false) {
-  try {
-    console.log(`🗑️  Removing agent: ${agentName}`);
-
-    const agentFilePath = getAgentFilePath(globalFlag, agentName);
-    const promptsDir = getPromptsDir(globalFlag, agentName);
-
-    if (fs.existsSync(agentFilePath)) {
-      fs.rmSync(agentFilePath, { force: true });
-    }
-    if (fs.existsSync(promptsDir)) {
-      fs.rmSync(promptsDir, { recursive: true, force: true });
-    }
-
-    console.log(`✅ Successfully removed agent "${agentName}"`);
-  } catch (error) {
-    console.error(`❌ Error removing agent "${agentName}":`, error.message);
-    process.exit(1);
-  }
-}
-
-const args = process.argv.slice(2);
-let command,
+export async function installCommand(
   agentNames,
-  devFlag = false,
-  globalFlag = false,
-  forceFlag = false;
-
-// Support both: openmodes install <agent-name> --dev --global and any order
-if (args.includes("--dev") || args.includes("-d")) {
-  devFlag = true;
-}
-if (args.includes("-g") || args.includes("--global")) {
-  globalFlag = true;
-}
-if (args.includes("-y") || args.includes("--yes")) {
-  forceFlag = true;
-}
-const filteredArgs = args.filter(
-  (arg) =>
-    arg !== "--dev" &&
-    arg !== "-d" &&
-    arg !== "-g" &&
-    arg !== "--global" &&
-    arg !== "-y" &&
-    arg !== "--yes",
-);
-command = filteredArgs[0];
-agentNames = filteredArgs.slice(1);
-
-if (command === "install" && agentNames.length > 0) {
+  { devFlag = false, globalFlag = false, forceFlag = false } = {},
+) {
   await Promise.all(
     agentNames.map((agentName) =>
       installAgent(agentName, devFlag, globalFlag, forceFlag),
     ),
   );
-} else if (command === "remove" && agentNames.length > 0) {
-  agentNames.forEach((agentName) => {
-    removeAgent(agentName, globalFlag);
-  });
-} else {
-  console.log(
-    "Usage: openmodes <command> <agent-name...> [--dev] [-g|--global] [-y|--yes]",
-  );
-  console.log("");
-  console.log("Commands:");
-  console.log(
-    "  install <agent-name...> [--dev] [-g|--global] [-y|--yes]  Install one or more agents as .opencode/agent/{agent}.md (or globally) from openmodes.dev or local dev server",
-  );
-  console.log(
-    "  remove <agent-name...> [-g|--global]                      Remove one or more installed agents (local or global)",
-  );
-  console.log("");
-  console.log("Options:");
-  console.log("  --dev, -d      Use development server (localhost:5173)");
-  console.log("  -g, --global   Install globally to ~/.config/opencode");
-  console.log("  -y, --yes      Overwrite existing agent without confirmation");
-  console.log("");
-  console.log("Versioning:");
-  console.log("  agent-name      Install latest version");
-  console.log("  agent-name@1.0  Install specific version");
-  console.log("");
-  console.log("Examples:");
-  console.log("  npx openmodes install archie@1.4");
-  console.log("  npx openmodes install archie mode1 mode2");
-  console.log("  npx openmodes install archie --dev -g -y");
-  console.log("  npx openmodes remove archie mode1");
-  process.exit(1);
 }

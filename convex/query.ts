@@ -11,6 +11,7 @@ export {
   getModeWithVersions,
   checkModeNameAvailability,
   debugModeVersions,
+  getAllModes,
 } from "./modes";
 
 // User queries

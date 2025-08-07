@@ -571,6 +571,31 @@ export const createMode = mutation({
   },
 });
 
+export const getAllModes = query({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id("modes"),
+      name: v.string(),
+      version: v.string(),
+      status: v.union(
+        v.literal("pending"),
+        v.literal("approved"),
+        v.literal("rejected"),
+      ),
+    }),
+  ),
+  handler: async (ctx, _args) => {
+    const modes = await ctx.db.query("modes").collect();
+    return modes.map((mode) => ({
+      _id: mode._id,
+      name: mode.name,
+      version: mode.version,
+      status: mode.status,
+    }));
+  },
+});
+
 // Get mode with all its versions in a single query for better UX
 export const getModeWithVersions = query({
   args: { modeId: v.id("modes") },
